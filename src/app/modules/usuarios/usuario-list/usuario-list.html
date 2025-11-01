@@ -1,0 +1,52 @@
+<mat-card>
+  <mat-card-header >
+    <mat-card-title>Gestão de Usuários</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <button mat-raised-button color="primary" class="mb-3" (click)="add()">
+      <mat-icon>person_add</mat-icon>
+      Novo Usuário
+    </button>
+
+    @if (isLoading) {
+      <div class="d-flex justify-content-center py-5">
+        <mat-spinner diameter="100"></mat-spinner>
+      </div>
+    } @else {
+      <mat-table [dataSource]="usuarios">
+        <ng-container matColumnDef="nome">
+          <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let usuario">{{ usuario.nome }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
+          <mat-cell *matCellDef="let usuario">{{ usuario.email }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="telefone">
+          <mat-header-cell *matHeaderCellDef>Telefone</mat-header-cell>
+          <mat-cell *matCellDef="let usuario">{{ usuario.telefone }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="acoes">
+          <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+          <mat-cell *matCellDef="let usuario">
+            <button mat-icon-button color="accent" (click)="edit(usuario)" title="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="openDeleteDialog(usuario.id)" title="Excluir">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+
+      @if (usuarios.length === 0) {
+        <p class="mt-3">Nenhum usuário cadastrado.</p>
+      }
+    }
+
+  </mat-card-content>
+</mat-card>

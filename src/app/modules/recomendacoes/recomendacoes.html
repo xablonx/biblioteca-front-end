@@ -1,0 +1,76 @@
+<div class="container mt-4">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Recomendação de Livros</mat-card-title>
+      <mat-card-subtitle>Sugestões baseadas no histórico de leitura do usuário.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+
+      <form [formGroup]="recomendacaoForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Selecione um Leitor</mat-label>
+          <mat-select formControlName="usuarioId" required>
+            @for (usuario of usuarios; track $index) {
+              <mat-option [value]="usuario.id">
+                {{ usuario.nome }} ({{ usuario.email }})
+              </mat-option>
+            }
+          </mat-select>
+          @if (recomendacaoForm.get('usuarioId')?.hasError('required')) {
+            <mat-error>
+              A seleção do usuário é obrigatória.
+            </mat-error>
+          }
+        </mat-form-field>
+      </form>
+
+      <mat-divider class="mt-4 mb-4"></mat-divider>
+
+      @if (usuarioSelecionado) {
+        <div>
+          <h3>Sugestões para: {{ usuarioSelecionado.nome }}</h3>
+          @if (livrosRecomendados.length > 0) {
+            <p>
+              Baseado em leituras anteriores na categoria
+              <mat-chip-listbox>
+                <mat-chip color="accent" selected>({{ livrosRecomendados.length }} Livros)</mat-chip>
+              </mat-chip-listbox>
+            </p>
+          }
+        </div>
+      }
+
+      @if (isLoading) {
+        <div class="d-flex justify-content-center py-5">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+      } @else {
+        <div>
+          @if (livrosRecomendados.length > 0) {
+            <div class="recommendation-list">
+              <mat-list>
+                @for (livro of livrosRecomendados; track $index) {
+                  <mat-list-item class="mat-elevation-z1 my-2">
+                    <mat-icon matListItemIcon>recommend</mat-icon>
+                    <div matListItemTitle>{{ livro.titulo }} ({{ livro.categoria }})</div>
+                    <div matListItemLine>Autor: {{ livro.autor }} | Publicado em: {{ livro.dataPublicacao | date: 'yyyy' }}</div>
+                    <button mat-button matListItemMeta color="primary" [routerLink]="['/livros/edit', livro.id]">
+                      Ver Livro
+                    </button>
+                  </mat-list-item>
+                }
+              </mat-list>
+            </div>
+          }
+
+        @if (livrosRecomendados.length === 0 && usuarioSelecionado) {
+          <p>
+            Não foi possível encontrar recomendações de livros que este usuário ainda não leu.
+          </p>
+        }
+      </div>
+    }
+
+    </mat-card-content>
+  </mat-card>
+</div>

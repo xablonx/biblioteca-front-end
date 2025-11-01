@@ -1,0 +1,49 @@
+<div class="container mt-4">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ isEdicao ? 'Editar' : 'Novo' }} Usuário</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (isLoading) {
+        <div class="d-flex justify-content-center py-5">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+      } @else {
+        <form [formGroup]="usuarioForm">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome" placeholder="Nome" required>
+            @if (usuarioForm.get('nome')?.hasError('required')) {
+              <mat-error>O nome é obrigatório.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-mail</mat-label>
+            <input matInput formControlName="email" placeholder="E-mail" required>
+            @if (usuarioForm.get('email')?.hasError('required')) {
+              <mat-error>O e-mail é obrigatório.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Telefone</mat-label>
+            <input matInput formControlName="telefone" placeholder="Telefone" required>
+            @if (usuarioForm.get('telefone')?.hasError('required')) {
+              <mat-error>O telefone é obrigatório.</mat-error>
+            }
+          </mat-form-field>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="usuarioForm.invalid || isLoading">
+              <mat-icon>{{ isEdicao ? 'save' : 'add' }}</mat-icon>
+              {{ isEdicao ? 'Salvar Alterações' : 'Cadastrar' }}
+            </button>
+            <button mat-button (click)="onCancel()" [disabled]="isLoading">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      }
+
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,108 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>Gestão de Livros</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <button mat-raised-button color="primary" class="mb-3" (click)="add()">
+        <mat-icon>menu_book</mat-icon>
+        Novo Livro
+      </button>
+
+      <mat-divider></mat-divider>
+
+      <form (ngSubmit)="searchGoogle()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Buscar livro por título</mat-label>
+          <input matInput [(ngModel)]="tituloSearch" name="tituloBusca">
+          <button matSuffix mat-icon-button type="submit" [disabled]="isSearchingGoogle">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </form>
+
+      @if (isSearchingGoogle) {
+        <div class="d-flex justify-content-center py-3">
+          <mat-spinner diameter="30"></mat-spinner>
+          <span class="ms-3 align-self-center">Buscando no Google Books...</span>
+        </div>
+      }
+
+      @if (googleBooks.length > 0 && !isSearchingGoogle) {
+        <div class="mb-4 mt-3 mat-elevation-z1 p-3">
+          <h5>Resultados Encontrados ({{ googleBooks.length }})</h5>
+          <mat-list>
+            @for (livro of googleBooks; track $index) {
+              <mat-list-item>
+                <mat-icon matListItemIcon>book</mat-icon>
+                <div matListItemTitle>{{ livro.titulo }}</div>
+                <div matListItemLine>
+                  {{ livro.autor }} | {{ livro.categoria }} | ISBN: {{ livro.isbn }}
+                </div>
+                <button mat-flat-button color="accent" (click)="adicionarGoogleBook(livro)" [disabled]="isLoading">
+                  <mat-icon>add_circle_outline</mat-icon> Adicionar à Biblioteca
+                </button>
+              </mat-list-item>
+            }
+          </mat-list>
+        </div>
+      }
+
+      <mat-divider></mat-divider>
+
+      <h4 class="mt-3">Livros na Biblioteca</h4>
+
+      @if (isLoading) {
+        <div class="d-flex justify-content-center py-5">
+            <mat-spinner diameter="100"></mat-spinner>
+        </div>
+      } @else {
+
+        <mat-table [dataSource]="livros">
+          <ng-container matColumnDef="titulo">
+            <mat-header-cell *matHeaderCellDef>Título</mat-header-cell>
+            <mat-cell *matCellDef="let livro">{{livro.titulo}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="autor">
+            <mat-header-cell *matHeaderCellDef>Autor</mat-header-cell>
+            <mat-cell *matCellDef="let livro">{{livro.autor}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="isbn">
+            <mat-header-cell *matHeaderCellDef>ISBN</mat-header-cell>
+            <mat-cell *matCellDef="let livro">{{livro.isbn}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="publicacao">
+            <mat-header-cell *matHeaderCellDef>Publicação</mat-header-cell>
+            <mat-cell *matCellDef="let livro">{{livro.dataPublicacao | date: 'yyyy'}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="categoria">
+            <mat-header-cell *matHeaderCellDef>Categoria</mat-header-cell>
+            <mat-cell *matCellDef="let livro">{{livro.categoria}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+            <mat-cell *matCellDef="let livro">
+              <button mat-icon-button color="accent" (click)="edit(livro)" title="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="openDeleteDialog(livro.id)" title="Excluir">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+        @if (livros.length === 0) {
+          <p class="mt-3">Nenhum livro cadastrado na biblioteca.</p>
+        }
+      }
+  </mat-card-content>
+</mat-card>

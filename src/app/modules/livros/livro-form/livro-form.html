@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ isEdicao ? 'Editar' : 'Novo' }} Livro</mat-card-title>
+    </mat-card-header>
+      <mat-card-content>
+        @if (isLoading) {
+          <div class="d-flex justify-content-center py-5">
+              <mat-spinner diameter="50"></mat-spinner>
+          </div>
+        } @else {
+          <form [formGroup]="livroForm">
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Título</mat-label>
+              <input matInput formControlName="titulo" placeholder="Título" required>
+              @if (livroForm.get('titulo')?.hasError('required')) {
+                <mat-error>O título é obrigatório.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Autor</mat-label>
+              <input matInput formControlName="autor" placeholder="Autor" required>
+              @if (livroForm.get('autor')?.hasError('required')) {
+                <mat-error>O autor é obrigatório.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>ISBN</mat-label>
+              <input matInput formControlName="isbn" placeholder="ISBN" required>
+              @if (livroForm.get('isbn')?.hasError('required')) {
+                <mat-error>O ISBN é obrigatório.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Categoria</mat-label>
+              <input matInput formControlName="categoria" placeholder="Categoria" required>
+              @if (livroForm.get('categoria')?.hasError('required')) {
+                <mat-error>A categoria é obrigatória.</mat-error>
+              }
+              </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Data de Publicação</mat-label>
+              <input matInput type="date" formControlName="dataPublicacao" placeholder="Data de Publicação" required>
+              @if (livroForm.get('dataPublicacao')?.hasError('required')) {
+                <mat-error>A data de publicação é obrigatória.</mat-error>
+              }
+              </mat-form-field>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="livroForm.invalid || isLoading">
+                <mat-icon>{{ isEdicao ? 'save' : 'add' }}</mat-icon>
+                {{ isEdicao ? 'Salvar Alterações' : 'Cadastrar' }}
+              </button>
+              <button mat-button (click)="onCancel()" [disabled]="isLoading">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        }
+
+      </mat-card-content>
+  </mat-card>
+</div>

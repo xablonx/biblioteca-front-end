@@ -1,0 +1,59 @@
+<div class="container mt-4">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Registrar Novo Empréstimo</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (isLoading) {
+        <div class="d-flex justify-content-center py-5">
+          <mat-spinner diameter="100"></mat-spinner>
+        </div>
+      } @else {
+        <form [formGroup]="emprestimoForm">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Usuário</mat-label>
+            <mat-select formControlName="usuarioId" required>
+              @for (usuario of usuarios; track $index) {
+                <mat-option [value]="usuario.id">
+                  {{ usuario.nome }} ({{ usuario.email }})
+                </mat-option>
+              }
+            </mat-select>
+            @if (emprestimoForm.get('usuarioId')?.hasError('required')) {
+              <mat-error>
+                O usuário é obrigatório.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Livro</mat-label>
+            <mat-select formControlName="livroId" required>
+              @for (livro of livros; track $index) {
+                <mat-option [value]="livro.id">
+                  {{ livro.titulo }} - {{ livro.autor }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (emprestimoForm.get('livroId')?.hasError('required')) {
+              <mat-error>
+                O livro é obrigatório.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="emprestimoForm.invalid || isLoading">
+              <mat-icon>save</mat-icon>
+              Registrar Empréstimo
+            </button>
+            <button mat-button (click)="onCancel()" [disabled]="isLoading">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
